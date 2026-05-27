@@ -5,6 +5,8 @@ Debug/
 Release/
 build/
 Build/
+atividades-exportadas/
+/atividades-exportadas/
 
 *.elf
 *.bin
