@@ -60,8 +60,8 @@ all: main-build
 main-build: o-melhor-programa-do-mundo.elf secondary-outputs
 
 # Tool invocations
-o-melhor-programa-do-mundo.elf o-melhor-programa-do-mundo.map: $(OBJS) $(USER_OBJS) /home/andrepozzan/programming-development/faculdade/micro/workspace-andrepozzan-atual/workspace-andrepozzan/o-melhor-programa-do-mundo/STM32G491RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "o-melhor-programa-do-mundo.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/andrepozzan/programming-development/faculdade/micro/workspace-andrepozzan-atual/workspace-andrepozzan/o-melhor-programa-do-mundo/STM32G491RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="o-melhor-programa-do-mundo.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+o-melhor-programa-do-mundo.elf o-melhor-programa-do-mundo.map: $(OBJS) $(USER_OBJS) /home/andrepozzan/programming-development/git-projects/microcontroladores-microprocessadores/STM32G491RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "o-melhor-programa-do-mundo.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/andrepozzan/programming-development/git-projects/microcontroladores-microprocessadores/STM32G491RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="o-melhor-programa-do-mundo.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

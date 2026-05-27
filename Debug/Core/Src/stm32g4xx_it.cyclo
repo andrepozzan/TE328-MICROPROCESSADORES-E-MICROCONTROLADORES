@@ -9,4 +9,6 @@
 ../Core/Src/stm32g4xx_it.c:184:6:SysTick_Handler	1
 ../Core/Src/stm32g4xx_it.c:205:6:TIM2_IRQHandler	1
 ../Core/Src/stm32g4xx_it.c:219:6:TIM4_IRQHandler	1
-../Core/Src/stm32g4xx_it.c:233:6:EXTI15_10_IRQHandler	1
+../Core/Src/stm32g4xx_it.c:233:6:EXTI2_IRQHandler	1
+../Core/Src/stm32g4xx_it.c:247:6:EXTI4_IRQHandler	1
+../Core/Src/stm32g4xx_it.c:261:6:EXTI15_10_IRQHandler	1

@@ -25,7 +25,7 @@ void testMatrix(void)
         for (int j = 0; j < 8; j++)
         {
             turnOnLed(i, j);
-            HAL_Delay(50); // mais rápido
+            HAL_Delay(150); // mais rápido
         }
     }
     apagaMatrix();

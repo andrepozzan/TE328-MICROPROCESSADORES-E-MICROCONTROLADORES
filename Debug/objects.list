@@ -3,6 +3,7 @@
 "./Core/Src/contador.o"
 "./Core/Src/leds.o"
 "./Core/Src/main.o"
+"./Core/Src/rgb.o"
 "./Core/Src/stm32g4xx_hal_msp.o"
 "./Core/Src/stm32g4xx_it.o"
 "./Core/Src/syscalls.o"

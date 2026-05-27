@@ -1,6 +1,7 @@
-../Core/Src/write-letters.c:36:6:drawMatrixMap	2
-../Core/Src/write-letters.c:55:10:getMap	3
-../Core/Src/write-letters.c:68:6:writeLetter	4
-../Core/Src/write-letters.c:83:9:getColumn	3
-../Core/Src/write-letters.c:96:6:rotateAntiClockwise	4
-../Core/Src/write-letters.c:111:6:scrollText	7
+../Core/Src/write-letters.c:79:6:drawMatrixMap	2
+../Core/Src/write-letters.c:98:16:getMap	3
+../Core/Src/write-letters.c:111:16:getLetterMap	1
+../Core/Src/write-letters.c:116:6:writeLetter	4
+../Core/Src/write-letters.c:131:9:getColumn	3
+../Core/Src/write-letters.c:144:6:rotateAntiClockwise	4
+../Core/Src/write-letters.c:159:6:scrollText	7
