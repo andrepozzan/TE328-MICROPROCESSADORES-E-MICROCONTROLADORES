@@ -16,9 +16,6 @@ void testMatrix(void);
 
 #include <stdint.h>
 
-// Variáveis globais do player
-extern int playerX;
-extern int playerY;
 
 // Funções para o display LED
 void clearMatrix(void);

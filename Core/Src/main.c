@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2026 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -25,6 +25,8 @@
 #include "fonts.h"
 #include <stdio.h>
 #include <string.h>
+#include "oled.h"
+#include "bluetooth.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,120 +75,63 @@ static void MX_I2C2_Init(void);
 static void MX_UART5_Init(void);
 /* USER CODE BEGIN PFP */
 
-void Parse_Bluetooth_Command(char* cmd); //Código para receber os comandos do celular
-void Update_OLED(void); //Função para plotar na tela OLED
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 // Atualiza o Display OLED com os Duty Cycles atuais
-void Update_OLED(void) {
-    char buffer[20];
-
-    SSD1306_Clear();
-
-    // Red
-    sprintf(buffer, "RED  : %d %%", duty_r);
-    SSD1306_GotoXY(10, 5);
-    SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
-
-    // Green
-    sprintf(buffer, "GREEN: %d %%", duty_g);
-    SSD1306_GotoXY(10, 25);
-    SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
-
-    // Blue
-    sprintf(buffer, "BLUE : %d %%", duty_b);
-    SSD1306_GotoXY(10, 40);
-    SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
-
-    SSD1306_UpdateScreen();
-}
 
 // Analisa o comando ASCII recebido via UART
-void Parse_Bluetooth_Command(char* cmd) {
-    char color;
-    int value;
-
-    // O espaço extra no scanf (" %c = %d") lida com espaços acidentais de formatação
-    if (sscanf(cmd, " %c = %d", &color, &value) >= 2) { // Encontrou pelo menos R/G/B e um número
-
-        // Garante que o valor fique entre 0 e 100%
-        if (value < 0) value = 0;
-        if (value > 100) value = 100;
-
-        switch(color) {
-            case 'R':
-            case 'r':
-                duty_r = value;
-                __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty_r);
-                break;
-            case 'G':
-            case 'g':
-                duty_g = value;
-                __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, duty_g);
-                break;
-            case 'B':
-            case 'b':
-                duty_b = value;
-                __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, duty_b);
-                break;
-            default:
-                return; // Cor inválida, não atualiza
-        }
-        update_display = 1; // Sinaliza que o display precisa ser atualizado
-    }
-}
 
 // Callback de recepção da UART
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart->Instance == UART5) {
-        // Verifica fim de linha (LF ou CR)
-        if (rx_byte == '\n' || rx_byte == '\r') {
-            rx_buffer[rx_index] = '\0'; // Finaliza a string
-            if (rx_index > 0) {
-                Parse_Bluetooth_Command(rx_buffer); // Processa a string completa
-            }
-            rx_index = 0; // Reseta o índice para o próximo comando
-        }
-        else {
-            // Ignora o caractere de porcentagem para facilitar o parsing, se quiser
-            if (rx_byte != '%') {
-                rx_buffer[rx_index++] = rx_byte;
-            }
-            if (rx_index >= RX_BUFFER_SIZE - 1) {
-                rx_index = 0; // Proteção contra buffer overflow
-            }
-        }
-        // Rearma a interrupção
-        HAL_UART_Receive_IT(&huart5, &rx_byte, 1);
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == UART5)
+  {
+    // Lógica de montagem do buffer...
+    if (rx_byte == '\n' || rx_byte == '\r')
+    {
+      rx_buffer[rx_index] = '\0';
+      bluetoothCommand(rx_buffer, &duty_r, &duty_g, &duty_b, &update_display);
+      rx_index = 0;
     }
+    else
+    {
+      if (rx_byte != '%')
+        rx_buffer[rx_index++] = rx_byte;
+      if (rx_index >= RX_BUFFER_SIZE - 1)
+        rx_index = 0;
+    }
+    HAL_UART_Receive_IT(&huart5, &rx_byte, 1);
+  }
 }
 
 // Interrupção externa PA11
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-    if (GPIO_Pin == GPIO_PIN_11) {
-        // Zera as variáveis
-        duty_r = 0;
-        duty_g = 0;
-        duty_b = 0;
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if (GPIO_Pin == GPIO_PIN_11)
+  {
+    // Zera as variáveis
+    duty_r = 0;
+    duty_g = 0;
+    duty_b = 0;
 
-        // Zera os registradores CCR do Timer 2
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 0);
+    // Zera os registradores CCR do Timer 2
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 0);
 
-        // Sinaliza para atualizar o OLED
-        update_display = 1;
-    }
+    // Sinaliza para atualizar o OLED
+    update_display = 1;
+  }
 }
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
 
@@ -238,12 +183,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (update_display)
-	  {
-		  Update_OLED(); //Atualização somente se receber informação
-		  update_display = 0;
-	  }
-	  HAL_Delay(50); // Pequeno atraso
+    if (update_display)
+    {
+      updateOLEDDisplay(duty_r, duty_g, duty_b); // Atualização somente se receber informação
+      update_display = 0;
+    }
+    HAL_Delay(50); // Pequeno atraso
 
     /* USER CODE END WHILE */
 
@@ -253,21 +198,21 @@ int main(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -284,9 +229,8 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
@@ -299,10 +243,10 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief I2C2 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief I2C2 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_I2C2_Init(void)
 {
 
@@ -328,14 +272,14 @@ static void MX_I2C2_Init(void)
   }
 
   /** Configure Analogue filter
-  */
+   */
   if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
   {
     Error_Handler();
   }
 
   /** Configure Digital filter
-  */
+   */
   if (HAL_I2CEx_ConfigDigitalFilter(&hi2c2, 0) != HAL_OK)
   {
     Error_Handler();
@@ -343,14 +287,13 @@ static void MX_I2C2_Init(void)
   /* USER CODE BEGIN I2C2_Init 2 */
 
   /* USER CODE END I2C2_Init 2 */
-
 }
 
 /**
-  * @brief TIM2 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief TIM2 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_TIM2_Init(void)
 {
 
@@ -412,14 +355,13 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 2 */
   HAL_TIM_MspPostInit(&htim2);
-
 }
 
 /**
-  * @brief UART5 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief UART5 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_UART5_Init(void)
 {
 
@@ -460,14 +402,13 @@ static void MX_UART5_Init(void)
   /* USER CODE BEGIN UART5_Init 2 */
 
   /* USER CODE END UART5_Init 2 */
-
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -495,7 +436,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LPUART1_TX_Pin LPUART1_RX_Pin */
-  GPIO_InitStruct.Pin = LPUART1_TX_Pin|LPUART1_RX_Pin;
+  GPIO_InitStruct.Pin = LPUART1_TX_Pin | LPUART1_RX_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -536,9 +477,9 @@ static void MX_GPIO_Init(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -551,12 +492,12 @@ void Error_Handler(void)
 }
 #ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
