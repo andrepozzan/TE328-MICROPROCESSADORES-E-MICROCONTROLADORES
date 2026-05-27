@@ -22,7 +22,7 @@
 
 // ===================== TABELA (ÂNODO COMUM) =====================
 // 0 = segmento ligado | 1 = desligado
-const uint8_t digits[10] = {
+const uint8_t seven_seg_lookup[10] = {
     0b11000000, // 0
     0b11111001, // 1
     0b10100100, // 2
@@ -38,22 +38,34 @@ const uint8_t digits[10] = {
 // ===================== FUNÇÕES =====================
 
 // desliga todos os displays
-void desligar_todos() {
-    HAL_GPIO_WritePin(DIG_PORT, DIG1|DIG2|DIG3|DIG4, GPIO_PIN_RESET);
+void turnOffAllDisplays()
+{
+    HAL_GPIO_WritePin(DIG_PORT, DIG1 | DIG2 | DIG3 | DIG4, GPIO_PIN_RESET);
 }
 
 // liga apenas um display
-void ligar_display(uint8_t pos) {
-    switch(pos) {
-        case 0: HAL_GPIO_WritePin(DIG_PORT, DIG1, GPIO_PIN_SET); break;
-        case 1: HAL_GPIO_WritePin(DIG_PORT, DIG2, GPIO_PIN_SET); break;
-        case 2: HAL_GPIO_WritePin(DIG_PORT, DIG3, GPIO_PIN_SET); break;
-        case 3: HAL_GPIO_WritePin(DIG_PORT, DIG4, GPIO_PIN_SET); break;
+void enableDisplay(uint8_t pos)
+{
+    switch (pos)
+    {
+    case 0:
+        HAL_GPIO_WritePin(DIG_PORT, DIG1, GPIO_PIN_SET);
+        break;
+    case 1:
+        HAL_GPIO_WritePin(DIG_PORT, DIG2, GPIO_PIN_SET);
+        break;
+    case 2:
+        HAL_GPIO_WritePin(DIG_PORT, DIG3, GPIO_PIN_SET);
+        break;
+    case 3:
+        HAL_GPIO_WritePin(DIG_PORT, DIG4, GPIO_PIN_SET);
+        break;
     }
 }
 
 // envia os segmentos
-void set_segments(uint8_t value) {
+void setSegments(uint8_t value)
+{
 
     HAL_GPIO_WritePin(SEG_PORT, SEG_A, (value & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
     HAL_GPIO_WritePin(SEG_PORT, SEG_B, (value & 0x02) ? GPIO_PIN_SET : GPIO_PIN_RESET);
@@ -62,11 +74,12 @@ void set_segments(uint8_t value) {
     HAL_GPIO_WritePin(SEG_PORT, SEG_E, (value & 0x10) ? GPIO_PIN_SET : GPIO_PIN_RESET);
     HAL_GPIO_WritePin(SEG_PORT, SEG_F, (value & 0x20) ? GPIO_PIN_SET : GPIO_PIN_RESET);
     HAL_GPIO_WritePin(SEG_PORT, SEG_G, (value & 0x40) ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(SEG_PORT, SEG_DP,(value & 0x80) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(SEG_PORT, SEG_DP, (value & 0x80) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 // função principal de exibição
-void display_number(int num) {
+void displayNumber(int num)
+{
 
     int d[4];
 
@@ -75,10 +88,11 @@ void display_number(int num) {
     d[2] = (num / 10) % 10;
     d[3] = num % 10;
 
-    for(int i = 0; i < 4; i++) {
-        desligar_todos();                 // evita ghosting
-        set_segments(digits[d[i]]);       // envia número
-        ligar_display(i);                 // ativa dígito
-        HAL_Delay(1);                     // tempo de persistência
+    for (int i = 0; i < 4; i++)
+    {
+        turnOffAllDisplays();                // evita ghosting
+        setSegments(seven_seg_lookup[d[i]]); // envia número
+        enableDisplay(i);                    // ativa dígito
+        HAL_Delay(1);                        // tempo de persistência
     }
 }

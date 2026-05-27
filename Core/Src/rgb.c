@@ -9,14 +9,14 @@
 #include "alfabeto.h"
 #include "write-letters.h"
 
-extern float duty_R;
-extern float duty_G;
-extern float duty_B;
-extern ColorSelect cor_atual;
-extern uint8_t passo_varredura;
+extern float red_duty_cycle;
+extern float green_duty_cycle;
+extern float blue_duty_cycle;
+extern ColorSelect selected_color;
+extern uint8_t scan_step;
 extern TIM_HandleTypeDef htim2;
 
-void Atualizar_Matriz_8x8(ColorSelect cor)
+void updateMatrix8x8(ColorSelect cor)
 {
     if (cor == RED)
     {
@@ -32,80 +32,80 @@ void Atualizar_Matriz_8x8(ColorSelect cor)
     }
 }
 
-void Atualiza_Displays_Unificado(void)
+void updateUnifiedDisplays(void)
 {
-    float valor_foco = 0.0f;
-    const uint8_t *imagem_matriz = NULL;
-    char letra = 'R';
+    float focused_value = 0.0f;
+    const uint8_t *matrix_image = NULL;
+    char letter = 'R';
 
-    if (cor_atual == RED)
+    if (selected_color == RED)
     {
-        valor_foco = duty_R;
-        letra = 'R';
+        focused_value = red_duty_cycle;
+        letter = 'R';
     }
-    else if (cor_atual == GREEN)
+    else if (selected_color == GREEN)
     {
-        valor_foco = duty_G;
-        letra = 'G';
+        focused_value = green_duty_cycle;
+        letter = 'G';
     }
     else
     {
-        valor_foco = duty_B;
-        letra = 'B';
+        focused_value = blue_duty_cycle;
+        letter = 'B';
     }
 
-    imagem_matriz = getLetterMap(letra);
-    if (imagem_matriz == NULL)
+    matrix_image = getLetterMap(letter);
+    if (matrix_image == NULL)
     {
         return;
     }
 
-    int intensidade = (int)(valor_foco * 10.0f);
+    int intensity = (int)(focused_value * 10.0f);
 
-    int digito_1 = (intensidade / 1000) % 10;
-    int digito_2 = (intensidade / 100) % 10;
-    int digito_3 = (intensidade / 10) % 10;
-    int digito_4 = intensidade % 10;
+    int digit_1 = (intensity / 1000) % 10;
+    int digit_2 = (intensity / 100) % 10;
+    int digit_3 = (intensity / 10) % 10;
+    int digit_4 = intensity % 10;
 
     HAL_GPIO_WritePin(GPIOC, 0x00FF, GPIO_PIN_SET);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11, GPIO_PIN_RESET);
 
-    if (passo_varredura < 8)
+    if (scan_step < 8)
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (imagem_matriz[7 - passo_varredura] << 8);
-        HAL_GPIO_WritePin(GPIOC, (1 << passo_varredura), GPIO_PIN_RESET);
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (matrix_image[7 - scan_step] << 8);
+        HAL_GPIO_WritePin(GPIOC, (1 << scan_step), GPIO_PIN_RESET);
     }
-    else if (passo_varredura == 8)
+    else if (scan_step == 8)
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (decod_7_seg[digito_1] << 8);
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (seven_seg_patterns[digit_1] << 8);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
     }
-    else if (passo_varredura == 9)
+    else if (scan_step == 9)
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (decod_7_seg[digito_2] << 8);
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (seven_seg_patterns[digit_2] << 8);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
     }
-    else if (passo_varredura == 10)
+    else if (scan_step == 10)
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | ((decod_7_seg[digito_3] | 0x80) << 8);
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | ((seven_seg_patterns[digit_3] | 0x80) << 8);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, GPIO_PIN_SET);
     }
-    else if (passo_varredura == 11)
+    else if (scan_step == 11)
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (decod_7_seg[digito_4] << 8);
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (seven_seg_patterns[digit_4] << 8);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
     }
 
-    passo_varredura++;
-    if (passo_varredura > 11)
+    scan_step++;
+    if (scan_step > 11)
     {
-        passo_varredura = 0;
+        scan_step = 0;
     }
 }
 
-void Atualizar_PWM(void)
+void updatePwm(void)
 {
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, (uint32_t)(duty_R * 9.99f));
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, (uint32_t)(duty_G * 9.99f));
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, (uint32_t)(duty_B * 9.99f));
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, (uint32_t)(red_duty_cycle * 9.99f));
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, (uint32_t)(green_duty_cycle * 9.99f));
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, (uint32_t)(blue_duty_cycle * 9.99f));
 }

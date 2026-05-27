@@ -8,9 +8,9 @@ extern "C"
 {
 #endif
 
-    void Atualiza_Displays_Unificado(void);
-    void Atualizar_PWM(void);
-    void Atualizar_Matriz_8x8(ColorSelect cor);
+    void updateUnifiedDisplays(void);
+    void updatePwm(void);
+    void updateMatrix8x8(ColorSelect cor);
 
 #ifdef __cplusplus
 }

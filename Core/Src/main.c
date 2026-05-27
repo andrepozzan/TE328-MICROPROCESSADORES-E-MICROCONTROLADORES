@@ -54,16 +54,16 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN PV */
-volatile uint8_t texto_pendente = 0;
-float duty_R = 0.0f;
-float duty_G = 0.0f;
-float duty_B = 0.0f;
-ColorSelect cor_atual = RED;
-uint8_t passo_varredura = 0;
+volatile uint8_t pending_text = 0;
+float red_duty_cycle = 0.0f;
+float green_duty_cycle = 0.0f;
+float blue_duty_cycle = 0.0f;
+ColorSelect selected_color = RED;
+uint8_t scan_step = 0;
 
-static uint32_t ultimo_bounce_pb4 = 0;
-static uint32_t ultimo_bounce_pa11 = 0;
-static uint32_t ultimo_bounce_pa12 = 0;
+static uint32_t last_pb4_debounce = 0;
+static uint32_t last_pa11_debounce = 0;
+static uint32_t last_pa12_debounce = 0;
 
 /* USER CODE END PV */
 
@@ -76,29 +76,29 @@ static void MX_ADC3_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
-void TurnOff_7seg(void);
+void turnOff7Seg(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static float *cor_duty_atual(void)
+static float *currentDutyPointer(void)
 {
-  if (cor_atual == RED)
+  if (selected_color == RED)
   {
-    return &duty_R;
+    return &red_duty_cycle;
   }
 
-  if (cor_atual == GREEN)
+  if (selected_color == GREEN)
   {
-    return &duty_G;
+    return &green_duty_cycle;
   }
 
-  return &duty_B;
+  return &blue_duty_cycle;
 }
 
-static void ajustar_duty_atual(float delta)
+static void adjustCurrentDuty(float delta)
 {
-  float *duty = cor_duty_atual();
+  float *duty = currentDutyPointer();
   *duty += delta;
 
   if (*duty > 100.0f)
@@ -110,35 +110,35 @@ static void ajustar_duty_atual(float delta)
     *duty = 0.0f;
   }
 
-  Atualizar_PWM();
+  updatePwm();
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  uint32_t agora = HAL_GetTick();
+  uint32_t now_ms = HAL_GetTick();
 
   if (GPIO_Pin == GPIO_PIN_4)
   {
-    if (agora - ultimo_bounce_pb4 >= 150)
+    if (now_ms - last_pb4_debounce >= 150)
     {
-      cor_atual = (ColorSelect)((cor_atual + 1) % 3);
-      ultimo_bounce_pb4 = agora;
+      selected_color = (ColorSelect)((selected_color + 1) % 3);
+      last_pb4_debounce = now_ms;
     }
   }
   else if (GPIO_Pin == GPIO_PIN_12)
   {
-    if (agora - ultimo_bounce_pa12 >= 150)
+    if (now_ms - last_pa12_debounce >= 150)
     {
-      ajustar_duty_atual(-10.0f);
-      ultimo_bounce_pa12 = agora;
+      adjustCurrentDuty(-10.0f);
+      last_pa12_debounce = now_ms;
     }
   }
   else if (GPIO_Pin == GPIO_PIN_11)
   {
-    if (agora - ultimo_bounce_pa11 >= 150)
+    if (now_ms - last_pa11_debounce >= 150)
     {
-      ajustar_duty_atual(10.0f);
-      ultimo_bounce_pa11 = agora;
+      adjustCurrentDuty(10.0f);
+      last_pa11_debounce = now_ms;
     }
   }
 }
@@ -147,7 +147,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM2)
   {
-    Atualiza_Displays_Unificado();
+    updateUnifiedDisplays();
   }
 }
 /* USER CODE END 4 */
@@ -189,7 +189,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-  Atualizar_PWM();
+  updatePwm();
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);

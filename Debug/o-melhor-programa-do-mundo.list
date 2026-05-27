@@ -35,17 +35,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  15 .debug_macro  00002741  00000000  00000000  00023b38  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_line   00016a70  00000000  00000000  00026279  2**0
+ 16 .debug_line   00016a7a  00000000  00000000  00026279  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_str    000e338a  00000000  00000000  0003cce9  2**0
+ 17 .debug_str    000e3394  00000000  00000000  0003ccf3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .comment      00000043  00000000  00000000  00120073  2**0
+ 18 .comment      00000043  00000000  00000000  00120087  2**0
                   CONTENTS, READONLY
- 19 .debug_rnglists 00001011  00000000  00000000  001200b6  2**0
+ 19 .debug_rnglists 00001011  00000000  00000000  001200ca  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_frame  000053a8  00000000  00000000  001210c8  2**2
+ 20 .debug_frame  000053a8  00000000  00000000  001210dc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000008b  00000000  00000000  00126470  2**0
+ 21 .debug_line_str 0000008b  00000000  00000000  00126484  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -369,39 +369,39 @@ Disassembly of section .text:
  8000540:	4770      	bx	lr
  8000542:	bf00      	nop
 
-08000544 <cor_duty_atual>:
+08000544 <currentDutyPointer>:
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static float *cor_duty_atual(void)
+static float *currentDutyPointer(void)
 {
  8000544:	b480      	push	{r7}
  8000546:	af00      	add	r7, sp, #0
-  if (cor_atual == RED)
- 8000548:	4b08      	ldr	r3, [pc, #32]	@ (800056c <cor_duty_atual+0x28>)
+  if (selected_color == RED)
+ 8000548:	4b08      	ldr	r3, [pc, #32]	@ (800056c <currentDutyPointer+0x28>)
  800054a:	781b      	ldrb	r3, [r3, #0]
  800054c:	2b00      	cmp	r3, #0
- 800054e:	d101      	bne.n	8000554 <cor_duty_atual+0x10>
+ 800054e:	d101      	bne.n	8000554 <currentDutyPointer+0x10>
   {
-    return &duty_R;
- 8000550:	4b07      	ldr	r3, [pc, #28]	@ (8000570 <cor_duty_atual+0x2c>)
- 8000552:	e006      	b.n	8000562 <cor_duty_atual+0x1e>
+    return &red_duty_cycle;
+ 8000550:	4b07      	ldr	r3, [pc, #28]	@ (8000570 <currentDutyPointer+0x2c>)
+ 8000552:	e006      	b.n	8000562 <currentDutyPointer+0x1e>
   }
 
-  if (cor_atual == GREEN)
- 8000554:	4b05      	ldr	r3, [pc, #20]	@ (800056c <cor_duty_atual+0x28>)
+  if (selected_color == GREEN)
+ 8000554:	4b05      	ldr	r3, [pc, #20]	@ (800056c <currentDutyPointer+0x28>)
  8000556:	781b      	ldrb	r3, [r3, #0]
  8000558:	2b01      	cmp	r3, #1
- 800055a:	d101      	bne.n	8000560 <cor_duty_atual+0x1c>
+ 800055a:	d101      	bne.n	8000560 <currentDutyPointer+0x1c>
   {
-    return &duty_G;
- 800055c:	4b05      	ldr	r3, [pc, #20]	@ (8000574 <cor_duty_atual+0x30>)
- 800055e:	e000      	b.n	8000562 <cor_duty_atual+0x1e>
+    return &green_duty_cycle;
+ 800055c:	4b05      	ldr	r3, [pc, #20]	@ (8000574 <currentDutyPointer+0x30>)
+ 800055e:	e000      	b.n	8000562 <currentDutyPointer+0x1e>
   }
 
-  return &duty_B;
- 8000560:	4b05      	ldr	r3, [pc, #20]	@ (8000578 <cor_duty_atual+0x34>)
+  return &blue_duty_cycle;
+ 8000560:	4b05      	ldr	r3, [pc, #20]	@ (8000578 <currentDutyPointer+0x34>)
 }
  8000562:	4618      	mov	r0, r3
  8000564:	46bd      	mov	sp, r7
@@ -412,16 +412,16 @@ static float *cor_duty_atual(void)
  8000574:	20000230 	.word	0x20000230
  8000578:	20000234 	.word	0x20000234
 
-0800057c <ajustar_duty_atual>:
+0800057c <adjustCurrentDuty>:
 
-static void ajustar_duty_atual(float delta)
+static void adjustCurrentDuty(float delta)
 {
  800057c:	b580      	push	{r7, lr}
  800057e:	b084      	sub	sp, #16
  8000580:	af00      	add	r7, sp, #0
  8000582:	ed87 0a01 	vstr	s0, [r7, #4]
-  float *duty = cor_duty_atual();
- 8000586:	f7ff ffdd 	bl	8000544 <cor_duty_atual>
+  float *duty = currentDutyPointer();
+ 8000586:	f7ff ffdd 	bl	8000544 <currentDutyPointer>
  800058a:	60f8      	str	r0, [r7, #12]
   *duty += delta;
  800058c:	68fb      	ldr	r3, [r7, #12]
@@ -434,23 +434,23 @@ static void ajustar_duty_atual(float delta)
   if (*duty > 100.0f)
  80005a0:	68fb      	ldr	r3, [r7, #12]
  80005a2:	edd3 7a00 	vldr	s15, [r3]
- 80005a6:	ed9f 7a0e 	vldr	s14, [pc, #56]	@ 80005e0 <ajustar_duty_atual+0x64>
+ 80005a6:	ed9f 7a0e 	vldr	s14, [pc, #56]	@ 80005e0 <adjustCurrentDuty+0x64>
  80005aa:	eef4 7ac7 	vcmpe.f32	s15, s14
  80005ae:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
- 80005b2:	dd03      	ble.n	80005bc <ajustar_duty_atual+0x40>
+ 80005b2:	dd03      	ble.n	80005bc <adjustCurrentDuty+0x40>
   {
     *duty = 100.0f;
  80005b4:	68fb      	ldr	r3, [r7, #12]
- 80005b6:	4a0b      	ldr	r2, [pc, #44]	@ (80005e4 <ajustar_duty_atual+0x68>)
+ 80005b6:	4a0b      	ldr	r2, [pc, #44]	@ (80005e4 <adjustCurrentDuty+0x68>)
  80005b8:	601a      	str	r2, [r3, #0]
- 80005ba:	e00b      	b.n	80005d4 <ajustar_duty_atual+0x58>
+ 80005ba:	e00b      	b.n	80005d4 <adjustCurrentDuty+0x58>
   }
   else if (*duty < 0.0f)
  80005bc:	68fb      	ldr	r3, [r7, #12]
  80005be:	edd3 7a00 	vldr	s15, [r3]
  80005c2:	eef5 7ac0 	vcmpe.f32	s15, #0.0
  80005c6:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
- 80005ca:	d503      	bpl.n	80005d4 <ajustar_duty_atual+0x58>
+ 80005ca:	d503      	bpl.n	80005d4 <adjustCurrentDuty+0x58>
   {
     *duty = 0.0f;
  80005cc:	68fb      	ldr	r3, [r7, #12]
@@ -458,8 +458,8 @@ static void ajustar_duty_atual(float delta)
  80005d2:	601a      	str	r2, [r3, #0]
   }
 
-  Atualizar_PWM();
- 80005d4:	f000 fce2 	bl	8000f9c <Atualizar_PWM>
+  updatePwm();
+ 80005d4:	f000 fce2 	bl	8000f9c <updatePwm>
 }
  80005d8:	bf00      	nop
  80005da:	3710      	adds	r7, #16
@@ -477,7 +477,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  80005ec:	af00      	add	r7, sp, #0
  80005ee:	4603      	mov	r3, r0
  80005f0:	80fb      	strh	r3, [r7, #6]
-  uint32_t agora = HAL_GetTick();
+  uint32_t now_ms = HAL_GetTick();
  80005f2:	f000 fffd 	bl	80015f0 <HAL_GetTick>
  80005f6:	60f8      	str	r0, [r7, #12]
 
@@ -486,7 +486,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  80005fa:	2b10      	cmp	r3, #16
  80005fc:	d118      	bne.n	8000630 <HAL_GPIO_EXTI_Callback+0x48>
   {
-    if (agora - ultimo_bounce_pb4 >= 150)
+    if (now_ms - last_pb4_debounce >= 150)
  80005fe:	4b20      	ldr	r3, [pc, #128]	@ (8000680 <HAL_GPIO_EXTI_Callback+0x98>)
  8000600:	681b      	ldr	r3, [r3, #0]
  8000602:	68fa      	ldr	r2, [r7, #12]
@@ -494,7 +494,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  8000606:	2b95      	cmp	r3, #149	@ 0x95
  8000608:	d935      	bls.n	8000676 <HAL_GPIO_EXTI_Callback+0x8e>
     {
-      cor_atual = (ColorSelect)((cor_atual + 1) % 3);
+      selected_color = (ColorSelect)((selected_color + 1) % 3);
  800060a:	4b1e      	ldr	r3, [pc, #120]	@ (8000684 <HAL_GPIO_EXTI_Callback+0x9c>)
  800060c:	781b      	ldrb	r3, [r3, #0]
  800060e:	1c5a      	adds	r2, r3, #1
@@ -509,13 +509,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  8000622:	b2ca      	uxtb	r2, r1
  8000624:	4b17      	ldr	r3, [pc, #92]	@ (8000684 <HAL_GPIO_EXTI_Callback+0x9c>)
  8000626:	701a      	strb	r2, [r3, #0]
-      ultimo_bounce_pb4 = agora;
+      last_pb4_debounce = now_ms;
  8000628:	4a15      	ldr	r2, [pc, #84]	@ (8000680 <HAL_GPIO_EXTI_Callback+0x98>)
  800062a:	68fb      	ldr	r3, [r7, #12]
  800062c:	6013      	str	r3, [r2, #0]
     {
-      ajustar_duty_atual(10.0f);
-      ultimo_bounce_pa11 = agora;
+      adjustCurrentDuty(10.0f);
+      last_pa11_debounce = now_ms;
     }
   }
 }
@@ -524,17 +524,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  8000630:	88fb      	ldrh	r3, [r7, #6]
  8000632:	f5b3 5f80 	cmp.w	r3, #4096	@ 0x1000
  8000636:	d10d      	bne.n	8000654 <HAL_GPIO_EXTI_Callback+0x6c>
-    if (agora - ultimo_bounce_pa12 >= 150)
+    if (now_ms - last_pa12_debounce >= 150)
  8000638:	4b14      	ldr	r3, [pc, #80]	@ (800068c <HAL_GPIO_EXTI_Callback+0xa4>)
  800063a:	681b      	ldr	r3, [r3, #0]
  800063c:	68fa      	ldr	r2, [r7, #12]
  800063e:	1ad3      	subs	r3, r2, r3
  8000640:	2b95      	cmp	r3, #149	@ 0x95
  8000642:	d918      	bls.n	8000676 <HAL_GPIO_EXTI_Callback+0x8e>
-      ajustar_duty_atual(-10.0f);
+      adjustCurrentDuty(-10.0f);
  8000644:	eeba 0a04 	vmov.f32	s0, #164	@ 0xc1200000 -10.0
- 8000648:	f7ff ff98 	bl	800057c <ajustar_duty_atual>
-      ultimo_bounce_pa12 = agora;
+ 8000648:	f7ff ff98 	bl	800057c <adjustCurrentDuty>
+      last_pa12_debounce = now_ms;
  800064c:	4a0f      	ldr	r2, [pc, #60]	@ (800068c <HAL_GPIO_EXTI_Callback+0xa4>)
  800064e:	68fb      	ldr	r3, [r7, #12]
  8000650:	6013      	str	r3, [r2, #0]
@@ -544,17 +544,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  8000654:	88fb      	ldrh	r3, [r7, #6]
  8000656:	f5b3 6f00 	cmp.w	r3, #2048	@ 0x800
  800065a:	d10c      	bne.n	8000676 <HAL_GPIO_EXTI_Callback+0x8e>
-    if (agora - ultimo_bounce_pa11 >= 150)
+    if (now_ms - last_pa11_debounce >= 150)
  800065c:	4b0c      	ldr	r3, [pc, #48]	@ (8000690 <HAL_GPIO_EXTI_Callback+0xa8>)
  800065e:	681b      	ldr	r3, [r3, #0]
  8000660:	68fa      	ldr	r2, [r7, #12]
  8000662:	1ad3      	subs	r3, r2, r3
  8000664:	2b95      	cmp	r3, #149	@ 0x95
  8000666:	d906      	bls.n	8000676 <HAL_GPIO_EXTI_Callback+0x8e>
-      ajustar_duty_atual(10.0f);
+      adjustCurrentDuty(10.0f);
  8000668:	eeb2 0a04 	vmov.f32	s0, #36	@ 0x41200000  10.0
- 800066c:	f7ff ff86 	bl	800057c <ajustar_duty_atual>
-      ultimo_bounce_pa11 = agora;
+ 800066c:	f7ff ff86 	bl	800057c <adjustCurrentDuty>
+      last_pa11_debounce = now_ms;
  8000670:	4a07      	ldr	r2, [pc, #28]	@ (8000690 <HAL_GPIO_EXTI_Callback+0xa8>)
  8000672:	68fb      	ldr	r3, [r7, #12]
  8000674:	6013      	str	r3, [r2, #0]
@@ -584,8 +584,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80006a0:	f1b3 4f80 	cmp.w	r3, #1073741824	@ 0x40000000
  80006a4:	d101      	bne.n	80006aa <HAL_TIM_PeriodElapsedCallback+0x16>
   {
-    Atualiza_Displays_Unificado();
- 80006a6:	f000 fb4f 	bl	8000d48 <Atualiza_Displays_Unificado>
+    updateUnifiedDisplays();
+ 80006a6:	f000 fb4f 	bl	8000d48 <updateUnifiedDisplays>
   }
 }
  80006aa:	bf00      	nop
@@ -635,8 +635,8 @@ int main(void)
   MX_TIM4_Init();
  80006d4:	f000 fa1c 	bl	8000b10 <MX_TIM4_Init>
   /* USER CODE BEGIN 2 */
-  Atualizar_PWM();
- 80006d8:	f000 fc60 	bl	8000f9c <Atualizar_PWM>
+  updatePwm();
+ 80006d8:	f000 fc60 	bl	8000f9c <updatePwm>
   HAL_TIM_Base_Start_IT(&htim2);
  80006dc:	4808      	ldr	r0, [pc, #32]	@ (8000700 <main+0x4c>)
  80006de:	f003 fb93 	bl	8003e08 <HAL_TIM_Base_Start_IT>
@@ -1756,81 +1756,81 @@ __STATIC_FORCEINLINE void __disable_irq(void)
  8000d44:	bf00      	nop
  8000d46:	e7fd      	b.n	8000d44 <Error_Handler+0x8>
 
-08000d48 <Atualiza_Displays_Unificado>:
+08000d48 <updateUnifiedDisplays>:
         writeLetter("B");
     }
 }
 
-void Atualiza_Displays_Unificado(void)
+void updateUnifiedDisplays(void)
 {
  8000d48:	b580      	push	{r7, lr}
  8000d4a:	b088      	sub	sp, #32
  8000d4c:	af00      	add	r7, sp, #0
-    float valor_foco = 0.0f;
+    float focused_value = 0.0f;
  8000d4e:	f04f 0300 	mov.w	r3, #0
  8000d52:	61fb      	str	r3, [r7, #28]
-    const uint8_t *imagem_matriz = NULL;
+    const uint8_t *matrix_image = NULL;
  8000d54:	2300      	movs	r3, #0
  8000d56:	617b      	str	r3, [r7, #20]
-    char letra = 'R';
+    char letter = 'R';
  8000d58:	2352      	movs	r3, #82	@ 0x52
  8000d5a:	76fb      	strb	r3, [r7, #27]
 
-    if (cor_atual == RED)
- 8000d5c:	4b84      	ldr	r3, [pc, #528]	@ (8000f70 <Atualiza_Displays_Unificado+0x228>)
+    if (selected_color == RED)
+ 8000d5c:	4b84      	ldr	r3, [pc, #528]	@ (8000f70 <updateUnifiedDisplays+0x228>)
  8000d5e:	781b      	ldrb	r3, [r3, #0]
  8000d60:	2b00      	cmp	r3, #0
- 8000d62:	d105      	bne.n	8000d70 <Atualiza_Displays_Unificado+0x28>
+ 8000d62:	d105      	bne.n	8000d70 <updateUnifiedDisplays+0x28>
     {
-        valor_foco = duty_R;
- 8000d64:	4b83      	ldr	r3, [pc, #524]	@ (8000f74 <Atualiza_Displays_Unificado+0x22c>)
+        focused_value = red_duty_cycle;
+ 8000d64:	4b83      	ldr	r3, [pc, #524]	@ (8000f74 <updateUnifiedDisplays+0x22c>)
  8000d66:	681b      	ldr	r3, [r3, #0]
  8000d68:	61fb      	str	r3, [r7, #28]
-        letra = 'R';
+        letter = 'R';
  8000d6a:	2352      	movs	r3, #82	@ 0x52
  8000d6c:	76fb      	strb	r3, [r7, #27]
- 8000d6e:	e00e      	b.n	8000d8e <Atualiza_Displays_Unificado+0x46>
+ 8000d6e:	e00e      	b.n	8000d8e <updateUnifiedDisplays+0x46>
     }
-    else if (cor_atual == GREEN)
- 8000d70:	4b7f      	ldr	r3, [pc, #508]	@ (8000f70 <Atualiza_Displays_Unificado+0x228>)
+    else if (selected_color == GREEN)
+ 8000d70:	4b7f      	ldr	r3, [pc, #508]	@ (8000f70 <updateUnifiedDisplays+0x228>)
  8000d72:	781b      	ldrb	r3, [r3, #0]
  8000d74:	2b01      	cmp	r3, #1
- 8000d76:	d105      	bne.n	8000d84 <Atualiza_Displays_Unificado+0x3c>
+ 8000d76:	d105      	bne.n	8000d84 <updateUnifiedDisplays+0x3c>
     {
-        valor_foco = duty_G;
- 8000d78:	4b7f      	ldr	r3, [pc, #508]	@ (8000f78 <Atualiza_Displays_Unificado+0x230>)
+        focused_value = green_duty_cycle;
+ 8000d78:	4b7f      	ldr	r3, [pc, #508]	@ (8000f78 <updateUnifiedDisplays+0x230>)
  8000d7a:	681b      	ldr	r3, [r3, #0]
  8000d7c:	61fb      	str	r3, [r7, #28]
-        letra = 'G';
+        letter = 'G';
  8000d7e:	2347      	movs	r3, #71	@ 0x47
  8000d80:	76fb      	strb	r3, [r7, #27]
- 8000d82:	e004      	b.n	8000d8e <Atualiza_Displays_Unificado+0x46>
+ 8000d82:	e004      	b.n	8000d8e <updateUnifiedDisplays+0x46>
     }
     else
     {
-        valor_foco = duty_B;
- 8000d84:	4b7d      	ldr	r3, [pc, #500]	@ (8000f7c <Atualiza_Displays_Unificado+0x234>)
+        focused_value = blue_duty_cycle;
+ 8000d84:	4b7d      	ldr	r3, [pc, #500]	@ (8000f7c <updateUnifiedDisplays+0x234>)
  8000d86:	681b      	ldr	r3, [r3, #0]
  8000d88:	61fb      	str	r3, [r7, #28]
-        letra = 'B';
+        letter = 'B';
  8000d8a:	2342      	movs	r3, #66	@ 0x42
  8000d8c:	76fb      	strb	r3, [r7, #27]
     }
 
-    imagem_matriz = getLetterMap(letra);
+    matrix_image = getLetterMap(letter);
  8000d8e:	7efb      	ldrb	r3, [r7, #27]
  8000d90:	4618      	mov	r0, r3
  8000d92:	f000 fb91 	bl	80014b8 <getLetterMap>
  8000d96:	6178      	str	r0, [r7, #20]
-    if (imagem_matriz == NULL)
+    if (matrix_image == NULL)
  8000d98:	697b      	ldr	r3, [r7, #20]
  8000d9a:	2b00      	cmp	r3, #0
- 8000d9c:	f000 80e3 	beq.w	8000f66 <Atualiza_Displays_Unificado+0x21e>
+ 8000d9c:	f000 80e3 	beq.w	8000f66 <updateUnifiedDisplays+0x21e>
     {
         return;
     }
 
-    int intensidade = (int)(valor_foco * 10.0f);
+    int intensity = (int)(focused_value * 10.0f);
  8000da0:	edd7 7a07 	vldr	s15, [r7, #28]
  8000da4:	eeb2 7a04 	vmov.f32	s14, #36	@ 0x41200000  10.0
  8000da8:	ee67 7a87 	vmul.f32	s15, s15, s14
@@ -1838,14 +1838,14 @@ void Atualiza_Displays_Unificado(void)
  8000db0:	ee17 3a90 	vmov	r3, s15
  8000db4:	613b      	str	r3, [r7, #16]
 
-    int digito_1 = (intensidade / 1000) % 10;
+    int digit_1 = (intensity / 1000) % 10;
  8000db6:	693b      	ldr	r3, [r7, #16]
- 8000db8:	4a71      	ldr	r2, [pc, #452]	@ (8000f80 <Atualiza_Displays_Unificado+0x238>)
+ 8000db8:	4a71      	ldr	r2, [pc, #452]	@ (8000f80 <updateUnifiedDisplays+0x238>)
  8000dba:	fb82 1203 	smull	r1, r2, r2, r3
  8000dbe:	1192      	asrs	r2, r2, #6
  8000dc0:	17db      	asrs	r3, r3, #31
  8000dc2:	1ad2      	subs	r2, r2, r3
- 8000dc4:	4b6f      	ldr	r3, [pc, #444]	@ (8000f84 <Atualiza_Displays_Unificado+0x23c>)
+ 8000dc4:	4b6f      	ldr	r3, [pc, #444]	@ (8000f84 <updateUnifiedDisplays+0x23c>)
  8000dc6:	fb83 1302 	smull	r1, r3, r3, r2
  8000dca:	1099      	asrs	r1, r3, #2
  8000dcc:	17d3      	asrs	r3, r2, #31
@@ -1856,14 +1856,14 @@ void Atualiza_Displays_Unificado(void)
  8000dd6:	005b      	lsls	r3, r3, #1
  8000dd8:	1ad3      	subs	r3, r2, r3
  8000dda:	60fb      	str	r3, [r7, #12]
-    int digito_2 = (intensidade / 100) % 10;
+    int digit_2 = (intensity / 100) % 10;
  8000ddc:	693b      	ldr	r3, [r7, #16]
- 8000dde:	4a6a      	ldr	r2, [pc, #424]	@ (8000f88 <Atualiza_Displays_Unificado+0x240>)
+ 8000dde:	4a6a      	ldr	r2, [pc, #424]	@ (8000f88 <updateUnifiedDisplays+0x240>)
  8000de0:	fb82 1203 	smull	r1, r2, r2, r3
  8000de4:	1152      	asrs	r2, r2, #5
  8000de6:	17db      	asrs	r3, r3, #31
  8000de8:	1ad2      	subs	r2, r2, r3
- 8000dea:	4b66      	ldr	r3, [pc, #408]	@ (8000f84 <Atualiza_Displays_Unificado+0x23c>)
+ 8000dea:	4b66      	ldr	r3, [pc, #408]	@ (8000f84 <updateUnifiedDisplays+0x23c>)
  8000dec:	fb83 1302 	smull	r1, r3, r3, r2
  8000df0:	1099      	asrs	r1, r3, #2
  8000df2:	17d3      	asrs	r3, r2, #31
@@ -1874,14 +1874,14 @@ void Atualiza_Displays_Unificado(void)
  8000dfc:	005b      	lsls	r3, r3, #1
  8000dfe:	1ad3      	subs	r3, r2, r3
  8000e00:	60bb      	str	r3, [r7, #8]
-    int digito_3 = (intensidade / 10) % 10;
+    int digit_3 = (intensity / 10) % 10;
  8000e02:	693b      	ldr	r3, [r7, #16]
- 8000e04:	4a5f      	ldr	r2, [pc, #380]	@ (8000f84 <Atualiza_Displays_Unificado+0x23c>)
+ 8000e04:	4a5f      	ldr	r2, [pc, #380]	@ (8000f84 <updateUnifiedDisplays+0x23c>)
  8000e06:	fb82 1203 	smull	r1, r2, r2, r3
  8000e0a:	1092      	asrs	r2, r2, #2
  8000e0c:	17db      	asrs	r3, r3, #31
  8000e0e:	1ad2      	subs	r2, r2, r3
- 8000e10:	4b5c      	ldr	r3, [pc, #368]	@ (8000f84 <Atualiza_Displays_Unificado+0x23c>)
+ 8000e10:	4b5c      	ldr	r3, [pc, #368]	@ (8000f84 <updateUnifiedDisplays+0x23c>)
  8000e12:	fb83 1302 	smull	r1, r3, r3, r2
  8000e16:	1099      	asrs	r1, r3, #2
  8000e18:	17d3      	asrs	r3, r2, #31
@@ -1892,9 +1892,9 @@ void Atualiza_Displays_Unificado(void)
  8000e22:	005b      	lsls	r3, r3, #1
  8000e24:	1ad3      	subs	r3, r2, r3
  8000e26:	607b      	str	r3, [r7, #4]
-    int digito_4 = intensidade % 10;
+    int digit_4 = intensity % 10;
  8000e28:	693a      	ldr	r2, [r7, #16]
- 8000e2a:	4b56      	ldr	r3, [pc, #344]	@ (8000f84 <Atualiza_Displays_Unificado+0x23c>)
+ 8000e2a:	4b56      	ldr	r3, [pc, #344]	@ (8000f84 <updateUnifiedDisplays+0x23c>)
  8000e2c:	fb83 1302 	smull	r1, r3, r3, r2
  8000e30:	1099      	asrs	r1, r3, #2
  8000e32:	17d3      	asrs	r3, r2, #31
@@ -1909,25 +1909,25 @@ void Atualiza_Displays_Unificado(void)
     HAL_GPIO_WritePin(GPIOC, 0x00FF, GPIO_PIN_SET);
  8000e42:	2201      	movs	r2, #1
  8000e44:	21ff      	movs	r1, #255	@ 0xff
- 8000e46:	4851      	ldr	r0, [pc, #324]	@ (8000f8c <Atualiza_Displays_Unificado+0x244>)
+ 8000e46:	4851      	ldr	r0, [pc, #324]	@ (8000f8c <updateUnifiedDisplays+0x244>)
  8000e48:	f001 ff38 	bl	8002cbc <HAL_GPIO_WritePin>
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11, GPIO_PIN_RESET);
  8000e4c:	2200      	movs	r2, #0
  8000e4e:	f44f 6170 	mov.w	r1, #3840	@ 0xf00
- 8000e52:	484e      	ldr	r0, [pc, #312]	@ (8000f8c <Atualiza_Displays_Unificado+0x244>)
+ 8000e52:	484e      	ldr	r0, [pc, #312]	@ (8000f8c <updateUnifiedDisplays+0x244>)
  8000e54:	f001 ff32 	bl	8002cbc <HAL_GPIO_WritePin>
 
-    if (passo_varredura < 8)
- 8000e58:	4b4d      	ldr	r3, [pc, #308]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+    if (scan_step < 8)
+ 8000e58:	4b4d      	ldr	r3, [pc, #308]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000e5a:	781b      	ldrb	r3, [r3, #0]
  8000e5c:	2b07      	cmp	r3, #7
- 8000e5e:	d81a      	bhi.n	8000e96 <Atualiza_Displays_Unificado+0x14e>
+ 8000e5e:	d81a      	bhi.n	8000e96 <updateUnifiedDisplays+0x14e>
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (imagem_matriz[7 - passo_varredura] << 8);
- 8000e60:	4b4c      	ldr	r3, [pc, #304]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (matrix_image[7 - scan_step] << 8);
+ 8000e60:	4b4c      	ldr	r3, [pc, #304]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000e62:	695b      	ldr	r3, [r3, #20]
  8000e64:	b2da      	uxtb	r2, r3
- 8000e66:	4b4a      	ldr	r3, [pc, #296]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+ 8000e66:	4b4a      	ldr	r3, [pc, #296]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000e68:	781b      	ldrb	r3, [r3, #0]
  8000e6a:	f1c3 0307 	rsb	r3, r3, #7
  8000e6e:	4619      	mov	r1, r3
@@ -1935,11 +1935,11 @@ void Atualiza_Displays_Unificado(void)
  8000e72:	440b      	add	r3, r1
  8000e74:	781b      	ldrb	r3, [r3, #0]
  8000e76:	021b      	lsls	r3, r3, #8
- 8000e78:	4946      	ldr	r1, [pc, #280]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+ 8000e78:	4946      	ldr	r1, [pc, #280]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000e7a:	4313      	orrs	r3, r2
  8000e7c:	614b      	str	r3, [r1, #20]
-        HAL_GPIO_WritePin(GPIOC, (1 << passo_varredura), GPIO_PIN_RESET);
- 8000e7e:	4b44      	ldr	r3, [pc, #272]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+        HAL_GPIO_WritePin(GPIOC, (1 << scan_step), GPIO_PIN_RESET);
+ 8000e7e:	4b44      	ldr	r3, [pc, #272]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000e80:	781b      	ldrb	r3, [r3, #0]
  8000e82:	461a      	mov	r2, r3
  8000e84:	2301      	movs	r3, #1
@@ -1947,130 +1947,130 @@ void Atualiza_Displays_Unificado(void)
  8000e88:	b29b      	uxth	r3, r3
  8000e8a:	2200      	movs	r2, #0
  8000e8c:	4619      	mov	r1, r3
- 8000e8e:	483f      	ldr	r0, [pc, #252]	@ (8000f8c <Atualiza_Displays_Unificado+0x244>)
+ 8000e8e:	483f      	ldr	r0, [pc, #252]	@ (8000f8c <updateUnifiedDisplays+0x244>)
  8000e90:	f001 ff14 	bl	8002cbc <HAL_GPIO_WritePin>
- 8000e94:	e059      	b.n	8000f4a <Atualiza_Displays_Unificado+0x202>
+ 8000e94:	e059      	b.n	8000f4a <updateUnifiedDisplays+0x202>
     }
-    else if (passo_varredura == 8)
- 8000e96:	4b3e      	ldr	r3, [pc, #248]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+    else if (scan_step == 8)
+ 8000e96:	4b3e      	ldr	r3, [pc, #248]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000e98:	781b      	ldrb	r3, [r3, #0]
  8000e9a:	2b08      	cmp	r3, #8
- 8000e9c:	d111      	bne.n	8000ec2 <Atualiza_Displays_Unificado+0x17a>
+ 8000e9c:	d111      	bne.n	8000ec2 <updateUnifiedDisplays+0x17a>
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (decod_7_seg[digito_1] << 8);
- 8000e9e:	4b3d      	ldr	r3, [pc, #244]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (seven_seg_patterns[digit_1] << 8);
+ 8000e9e:	4b3d      	ldr	r3, [pc, #244]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000ea0:	695b      	ldr	r3, [r3, #20]
  8000ea2:	b2da      	uxtb	r2, r3
- 8000ea4:	493c      	ldr	r1, [pc, #240]	@ (8000f98 <Atualiza_Displays_Unificado+0x250>)
+ 8000ea4:	493c      	ldr	r1, [pc, #240]	@ (8000f98 <updateUnifiedDisplays+0x250>)
  8000ea6:	68fb      	ldr	r3, [r7, #12]
  8000ea8:	440b      	add	r3, r1
  8000eaa:	781b      	ldrb	r3, [r3, #0]
  8000eac:	021b      	lsls	r3, r3, #8
- 8000eae:	4939      	ldr	r1, [pc, #228]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+ 8000eae:	4939      	ldr	r1, [pc, #228]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000eb0:	4313      	orrs	r3, r2
  8000eb2:	614b      	str	r3, [r1, #20]
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
  8000eb4:	2201      	movs	r2, #1
  8000eb6:	f44f 7100 	mov.w	r1, #512	@ 0x200
- 8000eba:	4834      	ldr	r0, [pc, #208]	@ (8000f8c <Atualiza_Displays_Unificado+0x244>)
+ 8000eba:	4834      	ldr	r0, [pc, #208]	@ (8000f8c <updateUnifiedDisplays+0x244>)
  8000ebc:	f001 fefe 	bl	8002cbc <HAL_GPIO_WritePin>
- 8000ec0:	e043      	b.n	8000f4a <Atualiza_Displays_Unificado+0x202>
+ 8000ec0:	e043      	b.n	8000f4a <updateUnifiedDisplays+0x202>
     }
-    else if (passo_varredura == 9)
- 8000ec2:	4b33      	ldr	r3, [pc, #204]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+    else if (scan_step == 9)
+ 8000ec2:	4b33      	ldr	r3, [pc, #204]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000ec4:	781b      	ldrb	r3, [r3, #0]
  8000ec6:	2b09      	cmp	r3, #9
- 8000ec8:	d111      	bne.n	8000eee <Atualiza_Displays_Unificado+0x1a6>
+ 8000ec8:	d111      	bne.n	8000eee <updateUnifiedDisplays+0x1a6>
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (decod_7_seg[digito_2] << 8);
- 8000eca:	4b32      	ldr	r3, [pc, #200]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (seven_seg_patterns[digit_2] << 8);
+ 8000eca:	4b32      	ldr	r3, [pc, #200]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000ecc:	695b      	ldr	r3, [r3, #20]
  8000ece:	b2da      	uxtb	r2, r3
- 8000ed0:	4931      	ldr	r1, [pc, #196]	@ (8000f98 <Atualiza_Displays_Unificado+0x250>)
+ 8000ed0:	4931      	ldr	r1, [pc, #196]	@ (8000f98 <updateUnifiedDisplays+0x250>)
  8000ed2:	68bb      	ldr	r3, [r7, #8]
  8000ed4:	440b      	add	r3, r1
  8000ed6:	781b      	ldrb	r3, [r3, #0]
  8000ed8:	021b      	lsls	r3, r3, #8
- 8000eda:	492e      	ldr	r1, [pc, #184]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+ 8000eda:	492e      	ldr	r1, [pc, #184]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000edc:	4313      	orrs	r3, r2
  8000ede:	614b      	str	r3, [r1, #20]
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
  8000ee0:	2201      	movs	r2, #1
  8000ee2:	f44f 6180 	mov.w	r1, #1024	@ 0x400
- 8000ee6:	4829      	ldr	r0, [pc, #164]	@ (8000f8c <Atualiza_Displays_Unificado+0x244>)
+ 8000ee6:	4829      	ldr	r0, [pc, #164]	@ (8000f8c <updateUnifiedDisplays+0x244>)
  8000ee8:	f001 fee8 	bl	8002cbc <HAL_GPIO_WritePin>
- 8000eec:	e02d      	b.n	8000f4a <Atualiza_Displays_Unificado+0x202>
+ 8000eec:	e02d      	b.n	8000f4a <updateUnifiedDisplays+0x202>
     }
-    else if (passo_varredura == 10)
- 8000eee:	4b28      	ldr	r3, [pc, #160]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+    else if (scan_step == 10)
+ 8000eee:	4b28      	ldr	r3, [pc, #160]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000ef0:	781b      	ldrb	r3, [r3, #0]
  8000ef2:	2b0a      	cmp	r3, #10
- 8000ef4:	d114      	bne.n	8000f20 <Atualiza_Displays_Unificado+0x1d8>
+ 8000ef4:	d114      	bne.n	8000f20 <updateUnifiedDisplays+0x1d8>
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | ((decod_7_seg[digito_3] | 0x80) << 8);
- 8000ef6:	4b27      	ldr	r3, [pc, #156]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | ((seven_seg_patterns[digit_3] | 0x80) << 8);
+ 8000ef6:	4b27      	ldr	r3, [pc, #156]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000ef8:	695b      	ldr	r3, [r3, #20]
  8000efa:	b2da      	uxtb	r2, r3
- 8000efc:	4926      	ldr	r1, [pc, #152]	@ (8000f98 <Atualiza_Displays_Unificado+0x250>)
+ 8000efc:	4926      	ldr	r1, [pc, #152]	@ (8000f98 <updateUnifiedDisplays+0x250>)
  8000efe:	687b      	ldr	r3, [r7, #4]
  8000f00:	440b      	add	r3, r1
  8000f02:	781b      	ldrb	r3, [r3, #0]
  8000f04:	f063 037f 	orn	r3, r3, #127	@ 0x7f
  8000f08:	b2db      	uxtb	r3, r3
  8000f0a:	021b      	lsls	r3, r3, #8
- 8000f0c:	4921      	ldr	r1, [pc, #132]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+ 8000f0c:	4921      	ldr	r1, [pc, #132]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000f0e:	4313      	orrs	r3, r2
  8000f10:	614b      	str	r3, [r1, #20]
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, GPIO_PIN_SET);
  8000f12:	2201      	movs	r2, #1
  8000f14:	f44f 6100 	mov.w	r1, #2048	@ 0x800
- 8000f18:	481c      	ldr	r0, [pc, #112]	@ (8000f8c <Atualiza_Displays_Unificado+0x244>)
+ 8000f18:	481c      	ldr	r0, [pc, #112]	@ (8000f8c <updateUnifiedDisplays+0x244>)
  8000f1a:	f001 fecf 	bl	8002cbc <HAL_GPIO_WritePin>
- 8000f1e:	e014      	b.n	8000f4a <Atualiza_Displays_Unificado+0x202>
+ 8000f1e:	e014      	b.n	8000f4a <updateUnifiedDisplays+0x202>
     }
-    else if (passo_varredura == 11)
- 8000f20:	4b1b      	ldr	r3, [pc, #108]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+    else if (scan_step == 11)
+ 8000f20:	4b1b      	ldr	r3, [pc, #108]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000f22:	781b      	ldrb	r3, [r3, #0]
  8000f24:	2b0b      	cmp	r3, #11
- 8000f26:	d110      	bne.n	8000f4a <Atualiza_Displays_Unificado+0x202>
+ 8000f26:	d110      	bne.n	8000f4a <updateUnifiedDisplays+0x202>
     {
-        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (decod_7_seg[digito_4] << 8);
- 8000f28:	4b1a      	ldr	r3, [pc, #104]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+        GPIOB->ODR = (GPIOB->ODR & 0x00FF) | (seven_seg_patterns[digit_4] << 8);
+ 8000f28:	4b1a      	ldr	r3, [pc, #104]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000f2a:	695b      	ldr	r3, [r3, #20]
  8000f2c:	b2da      	uxtb	r2, r3
- 8000f2e:	491a      	ldr	r1, [pc, #104]	@ (8000f98 <Atualiza_Displays_Unificado+0x250>)
+ 8000f2e:	491a      	ldr	r1, [pc, #104]	@ (8000f98 <updateUnifiedDisplays+0x250>)
  8000f30:	683b      	ldr	r3, [r7, #0]
  8000f32:	440b      	add	r3, r1
  8000f34:	781b      	ldrb	r3, [r3, #0]
  8000f36:	021b      	lsls	r3, r3, #8
- 8000f38:	4916      	ldr	r1, [pc, #88]	@ (8000f94 <Atualiza_Displays_Unificado+0x24c>)
+ 8000f38:	4916      	ldr	r1, [pc, #88]	@ (8000f94 <updateUnifiedDisplays+0x24c>)
  8000f3a:	4313      	orrs	r3, r2
  8000f3c:	614b      	str	r3, [r1, #20]
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
  8000f3e:	2201      	movs	r2, #1
  8000f40:	f44f 7180 	mov.w	r1, #256	@ 0x100
- 8000f44:	4811      	ldr	r0, [pc, #68]	@ (8000f8c <Atualiza_Displays_Unificado+0x244>)
+ 8000f44:	4811      	ldr	r0, [pc, #68]	@ (8000f8c <updateUnifiedDisplays+0x244>)
  8000f46:	f001 feb9 	bl	8002cbc <HAL_GPIO_WritePin>
     }
 
-    passo_varredura++;
- 8000f4a:	4b11      	ldr	r3, [pc, #68]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+    scan_step++;
+ 8000f4a:	4b11      	ldr	r3, [pc, #68]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000f4c:	781b      	ldrb	r3, [r3, #0]
  8000f4e:	3301      	adds	r3, #1
  8000f50:	b2da      	uxtb	r2, r3
- 8000f52:	4b0f      	ldr	r3, [pc, #60]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+ 8000f52:	4b0f      	ldr	r3, [pc, #60]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000f54:	701a      	strb	r2, [r3, #0]
-    if (passo_varredura > 11)
- 8000f56:	4b0e      	ldr	r3, [pc, #56]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+    if (scan_step > 11)
+ 8000f56:	4b0e      	ldr	r3, [pc, #56]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000f58:	781b      	ldrb	r3, [r3, #0]
  8000f5a:	2b0b      	cmp	r3, #11
- 8000f5c:	d904      	bls.n	8000f68 <Atualiza_Displays_Unificado+0x220>
+ 8000f5c:	d904      	bls.n	8000f68 <updateUnifiedDisplays+0x220>
     {
-        passo_varredura = 0;
- 8000f5e:	4b0c      	ldr	r3, [pc, #48]	@ (8000f90 <Atualiza_Displays_Unificado+0x248>)
+        scan_step = 0;
+ 8000f5e:	4b0c      	ldr	r3, [pc, #48]	@ (8000f90 <updateUnifiedDisplays+0x248>)
  8000f60:	2200      	movs	r2, #0
  8000f62:	701a      	strb	r2, [r3, #0]
- 8000f64:	e000      	b.n	8000f68 <Atualiza_Displays_Unificado+0x220>
+ 8000f64:	e000      	b.n	8000f68 <updateUnifiedDisplays+0x220>
         return;
  8000f66:	bf00      	nop
     }
@@ -2091,38 +2091,38 @@ void Atualiza_Displays_Unificado(void)
  8000f94:	48000400 	.word	0x48000400
  8000f98:	0800618c 	.word	0x0800618c
 
-08000f9c <Atualizar_PWM>:
+08000f9c <updatePwm>:
 
-void Atualizar_PWM(void)
+void updatePwm(void)
 {
  8000f9c:	b480      	push	{r7}
  8000f9e:	af00      	add	r7, sp, #0
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, (uint32_t)(duty_R * 9.99f));
- 8000fa0:	4b17      	ldr	r3, [pc, #92]	@ (8001000 <Atualizar_PWM+0x64>)
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, (uint32_t)(red_duty_cycle * 9.99f));
+ 8000fa0:	4b17      	ldr	r3, [pc, #92]	@ (8001000 <updatePwm+0x64>)
  8000fa2:	edd3 7a00 	vldr	s15, [r3]
- 8000fa6:	ed9f 7a17 	vldr	s14, [pc, #92]	@ 8001004 <Atualizar_PWM+0x68>
+ 8000fa6:	ed9f 7a17 	vldr	s14, [pc, #92]	@ 8001004 <updatePwm+0x68>
  8000faa:	ee67 7a87 	vmul.f32	s15, s15, s14
- 8000fae:	4b16      	ldr	r3, [pc, #88]	@ (8001008 <Atualizar_PWM+0x6c>)
+ 8000fae:	4b16      	ldr	r3, [pc, #88]	@ (8001008 <updatePwm+0x6c>)
  8000fb0:	681b      	ldr	r3, [r3, #0]
  8000fb2:	eefc 7ae7 	vcvt.u32.f32	s15, s15
  8000fb6:	ee17 2a90 	vmov	r2, s15
  8000fba:	635a      	str	r2, [r3, #52]	@ 0x34
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, (uint32_t)(duty_G * 9.99f));
- 8000fbc:	4b13      	ldr	r3, [pc, #76]	@ (800100c <Atualizar_PWM+0x70>)
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, (uint32_t)(green_duty_cycle * 9.99f));
+ 8000fbc:	4b13      	ldr	r3, [pc, #76]	@ (800100c <updatePwm+0x70>)
  8000fbe:	edd3 7a00 	vldr	s15, [r3]
- 8000fc2:	ed9f 7a10 	vldr	s14, [pc, #64]	@ 8001004 <Atualizar_PWM+0x68>
+ 8000fc2:	ed9f 7a10 	vldr	s14, [pc, #64]	@ 8001004 <updatePwm+0x68>
  8000fc6:	ee67 7a87 	vmul.f32	s15, s15, s14
- 8000fca:	4b0f      	ldr	r3, [pc, #60]	@ (8001008 <Atualizar_PWM+0x6c>)
+ 8000fca:	4b0f      	ldr	r3, [pc, #60]	@ (8001008 <updatePwm+0x6c>)
  8000fcc:	681b      	ldr	r3, [r3, #0]
  8000fce:	eefc 7ae7 	vcvt.u32.f32	s15, s15
  8000fd2:	ee17 2a90 	vmov	r2, s15
  8000fd6:	639a      	str	r2, [r3, #56]	@ 0x38
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, (uint32_t)(duty_B * 9.99f));
- 8000fd8:	4b0d      	ldr	r3, [pc, #52]	@ (8001010 <Atualizar_PWM+0x74>)
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, (uint32_t)(blue_duty_cycle * 9.99f));
+ 8000fd8:	4b0d      	ldr	r3, [pc, #52]	@ (8001010 <updatePwm+0x74>)
  8000fda:	edd3 7a00 	vldr	s15, [r3]
- 8000fde:	ed9f 7a09 	vldr	s14, [pc, #36]	@ 8001004 <Atualizar_PWM+0x68>
+ 8000fde:	ed9f 7a09 	vldr	s14, [pc, #36]	@ 8001004 <updatePwm+0x68>
  8000fe2:	ee67 7a87 	vmul.f32	s15, s15, s14
- 8000fe6:	4b08      	ldr	r3, [pc, #32]	@ (8001008 <Atualizar_PWM+0x6c>)
+ 8000fe6:	4b08      	ldr	r3, [pc, #32]	@ (8001008 <updatePwm+0x6c>)
  8000fe8:	681b      	ldr	r3, [r3, #0]
  8000fea:	eefc 7ae7 	vcvt.u32.f32	s15, s15
  8000fee:	ee17 2a90 	vmov	r2, s15
@@ -2141,9 +2141,9 @@ void Atualizar_PWM(void)
 
 08001014 <HAL_MspInit>:
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-                    /**
-  * Initializes the Global MSP.
-  */
+/**
+ * Initializes the Global MSP.
+ */
 void HAL_MspInit(void)
 {
  8001014:	b580      	push	{r7, lr}
@@ -2180,7 +2180,7 @@ void HAL_MspInit(void)
   /* System interrupt init*/
 
   /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
+   */
   HAL_PWREx_DisableUCPDDeadBattery();
  800104a:	f001 ff0b 	bl	8002e64 <HAL_PWREx_DisableUCPDDeadBattery>
 
@@ -2196,11 +2196,11 @@ void HAL_MspInit(void)
  8001058:	40021000 	.word	0x40021000
 
 0800105c <HAL_ADC_MspInit>:
-  * This function configures the hardware resources used in this example
-  * @param hadc: ADC handle pointer
-  * @retval None
-  */
-void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
+ * This function configures the hardware resources used in this example
+ * @param hadc: ADC handle pointer
+ * @retval None
+ */
+void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 {
  800105c:	b580      	push	{r7, lr}
  800105e:	b0a0      	sub	sp, #128	@ 0x80
@@ -2220,7 +2220,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  800107a:	2100      	movs	r1, #0
  800107c:	4618      	mov	r0, r3
  800107e:	f005 f84d 	bl	800611c <memset>
-  if(hadc->Instance==ADC1)
+  if (hadc->Instance == ADC1)
  8001082:	687b      	ldr	r3, [r7, #4]
  8001084:	681b      	ldr	r3, [r3, #0]
  8001086:	f1b3 4fa0 	cmp.w	r3, #1342177280	@ 0x50000000
@@ -2228,8 +2228,8 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 
     /* USER CODE END ADC1_MspInit 0 */
 
-  /** Initializes the peripherals clocks
-  */
+    /** Initializes the peripherals clocks
+     */
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;
  800108c:	f44f 4300 	mov.w	r3, #32768	@ 0x8000
  8001090:	61fb      	str	r3, [r7, #28]
@@ -2289,14 +2289,14 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  80010ec:	4619      	mov	r1, r3
  80010ee:	f04f 4090 	mov.w	r0, #1207959552	@ 0x48000000
  80010f2:	f001 fc57 	bl	80029a4 <HAL_GPIO_Init>
+
     /* USER CODE BEGIN ADC3_MspInit 1 */
 
     /* USER CODE END ADC3_MspInit 1 */
   }
-
 }
  80010f6:	e038      	b.n	800116a <HAL_ADC_MspInit+0x10e>
-  else if(hadc->Instance==ADC3)
+  else if (hadc->Instance == ADC3)
  80010f8:	687b      	ldr	r3, [r7, #4]
  80010fa:	681b      	ldr	r3, [r3, #0]
  80010fc:	4a1e      	ldr	r2, [pc, #120]	@ (8001178 <HAL_ADC_MspInit+0x11c>)
@@ -2339,7 +2339,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  800114a:	f003 0302 	and.w	r3, r3, #2
  800114e:	60fb      	str	r3, [r7, #12]
  8001150:	68fb      	ldr	r3, [r7, #12]
-    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+    GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
  8001152:	2303      	movs	r3, #3
  8001154:	66fb      	str	r3, [r7, #108]	@ 0x6c
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
@@ -2364,11 +2364,11 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  800117c:	48000400 	.word	0x48000400
 
 08001180 <HAL_UART_MspInit>:
-  * This function configures the hardware resources used in this example
-  * @param huart: UART handle pointer
-  * @retval None
-  */
-void HAL_UART_MspInit(UART_HandleTypeDef* huart)
+ * This function configures the hardware resources used in this example
+ * @param huart: UART handle pointer
+ * @retval None
+ */
+void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
  8001180:	b580      	push	{r7, lr}
  8001182:	b09e      	sub	sp, #120	@ 0x78
@@ -2388,7 +2388,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
  800119e:	2100      	movs	r1, #0
  80011a0:	4618      	mov	r0, r3
  80011a2:	f004 ffbb 	bl	800611c <memset>
-  if(huart->Instance==LPUART1)
+  if (huart->Instance == LPUART1)
  80011a6:	687b      	ldr	r3, [r7, #4]
  80011a8:	681b      	ldr	r3, [r3, #0]
  80011aa:	4a1f      	ldr	r2, [pc, #124]	@ (8001228 <HAL_UART_MspInit+0xa8>)
@@ -2397,8 +2397,8 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 
     /* USER CODE END LPUART1_MspInit 0 */
 
-  /** Initializes the peripherals clocks
-  */
+    /** Initializes the peripherals clocks
+     */
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_LPUART1;
  80011b0:	2320      	movs	r3, #32
  80011b2:	617b      	str	r3, [r7, #20]
@@ -2445,7 +2445,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     PA2     ------> LPUART1_TX
     PA3     ------> LPUART1_RX
     */
-    GPIO_InitStruct.Pin = LPUART1_TX_Pin|LPUART1_RX_Pin;
+    GPIO_InitStruct.Pin = LPUART1_TX_Pin | LPUART1_RX_Pin;
  80011fc:	230c      	movs	r3, #12
  80011fe:	667b      	str	r3, [r7, #100]	@ 0x64
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -2466,10 +2466,10 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
  8001216:	f04f 4090 	mov.w	r0, #1207959552	@ 0x48000000
  800121a:	f001 fbc3 	bl	80029a4 <HAL_GPIO_Init>
 
+    /* USER CODE BEGIN LPUART1_MspInit 1 */
+
     /* USER CODE END LPUART1_MspInit 1 */
-
   }
-
 }
  800121e:	bf00      	nop
  8001220:	3778      	adds	r7, #120	@ 0x78
@@ -2480,17 +2480,17 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
  800122c:	40021000 	.word	0x40021000
 
 08001230 <HAL_TIM_Base_MspInit>:
-  * This function configures the hardware resources used in this example
-  * @param htim_base: TIM_Base handle pointer
-  * @retval None
-  */
-void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
+ * This function configures the hardware resources used in this example
+ * @param htim_base: TIM_Base handle pointer
+ * @retval None
+ */
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
 {
  8001230:	b580      	push	{r7, lr}
  8001232:	b084      	sub	sp, #16
  8001234:	af00      	add	r7, sp, #0
  8001236:	6078      	str	r0, [r7, #4]
-  if(htim_base->Instance==TIM2)
+  if (htim_base->Instance == TIM2)
  8001238:	687b      	ldr	r3, [r7, #4]
  800123a:	681b      	ldr	r3, [r3, #0]
  800123c:	f1b3 4f80 	cmp.w	r3, #1073741824	@ 0x40000000
@@ -2520,14 +2520,14 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     HAL_NVIC_EnableIRQ(TIM2_IRQn);
  8001264:	201c      	movs	r0, #28
  8001266:	f001 fb82 	bl	800296e <HAL_NVIC_EnableIRQ>
+    HAL_NVIC_EnableIRQ(TIM4_IRQn);
     /* USER CODE BEGIN TIM4_MspInit 1 */
 
     /* USER CODE END TIM4_MspInit 1 */
   }
-
 }
  800126a:	e018      	b.n	800129e <HAL_TIM_Base_MspInit+0x6e>
-  else if(htim_base->Instance==TIM4)
+  else if (htim_base->Instance == TIM4)
  800126c:	687b      	ldr	r3, [r7, #4]
  800126e:	681b      	ldr	r3, [r3, #0]
  8001270:	4a0e      	ldr	r2, [pc, #56]	@ (80012ac <HAL_TIM_Base_MspInit+0x7c>)
@@ -2563,7 +2563,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 
 080012b0 <HAL_TIM_MspPostInit>:
 
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim)
 {
  80012b0:	b580      	push	{r7, lr}
  80012b2:	b08a      	sub	sp, #40	@ 0x28
@@ -2577,7 +2577,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
  80012c2:	609a      	str	r2, [r3, #8]
  80012c4:	60da      	str	r2, [r3, #12]
  80012c6:	611a      	str	r2, [r3, #16]
-  if(htim->Instance==TIM2)
+  if (htim->Instance == TIM2)
  80012c8:	687b      	ldr	r3, [r7, #4]
  80012ca:	681b      	ldr	r3, [r3, #0]
  80012cc:	f1b3 4f80 	cmp.w	r3, #1073741824	@ 0x40000000
@@ -2676,11 +2676,11 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
  8001362:	4619      	mov	r1, r3
  8001364:	f04f 4090 	mov.w	r0, #1207959552	@ 0x48000000
  8001368:	f001 fb1c 	bl	80029a4 <HAL_GPIO_Init>
+
     /* USER CODE BEGIN TIM2_MspPostInit 1 */
 
     /* USER CODE END TIM2_MspPostInit 1 */
   }
-
 }
  800136c:	bf00      	nop
  800136e:	3728      	adds	r7, #40	@ 0x28

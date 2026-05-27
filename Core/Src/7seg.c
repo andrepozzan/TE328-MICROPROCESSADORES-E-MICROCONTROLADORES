@@ -1,9 +1,9 @@
 #include "main.h"
 #include "alfabeto.h"
 
-int dados_7seg[4] = {0};
+int seven_seg_digits[4] = {0};
 
-void Cfg_PC8_PC11(void)
+void configurePc8ToPc11(void)
 {
 	// Zera os bits de modo dos pinos 8, 9, 10 e 11
 	GPIOC->MODER &= 0XFF00FFFF;
@@ -15,7 +15,7 @@ void Cfg_PC8_PC11(void)
 					0x01 << (2 * 11);
 }
 
-void TurnOff_7seg(void)
+void turnOff7Seg(void)
 {
 	// Desseleciona todos os displays
 	GPIOC->ODR &= ~(0x0F00); // PC8 a PC11 = 0
@@ -24,7 +24,7 @@ void TurnOff_7seg(void)
 	GPIOB->ODR &= 0x00FF;
 }
 
-void Test_7Seg(void)
+void test7Seg(void)
 {
 	// Varre os displays
 	for (int i = 0; i < 4; i++)
@@ -48,48 +48,48 @@ void Test_7Seg(void)
 		}
 	}
 
-	TurnOff_7seg();
+	turnOff7Seg();
 }
 
-void Display_7Seg(int valor, int posicao, int dp)
+void display7Seg(int value, int position, int decimalPoint)
 {
 	// Apaga os displays de 7 segmentos (Controle dos catodos/anodos no Port C)
 	GPIOC->ODR &= 0xF0FF;
 
 	// Seleciona o display de 7 segmentos
-	if (posicao == 0)
+	if (position == 0)
 		GPIOC->ODR |= 0x0100;
-	else if (posicao == 1)
+	else if (position == 1)
 		GPIOC->ODR |= 0x0800;
-	else if (posicao == 2)
+	else if (position == 2)
 		GPIOC->ODR |= 0x0400;
-	else if (posicao == 3)
+	else if (position == 3)
 		GPIOC->ODR |= 0x0200;
 
 	// --- CORREÇÃO BITWISE PARA O PORT B ---
 	// Em vez de limpar tudo, limpamos apenas os bits que pertencem aos segmentos do display.
 	// Supondo que você use de PB8 a PB15, a máscara isola esses pinos salvando o resto.
 	uint32_t temp_odr = GPIOB->ODR;
-	temp_odr &= 0x00FF;					   // Limpa apenas a parte alta onde ficam os segmentos
-	temp_odr |= (decod_7_seg[valor] << 8); // Insere o caractere decodificado
-	temp_odr |= ((dp & 0x01) << 15);	   // Insere o ponto decimal se houver
+	temp_odr &= 0x00FF;							  // Limpa apenas a parte alta onde ficam os segmentos
+	temp_odr |= (seven_seg_patterns[value] << 8); // Insere o caractere decodificado
+	temp_odr |= ((decimalPoint & 0x01) << 15);	  // Insere o ponto decimal se houver
 
 	GPIOB->ODR = temp_odr; // Aplica de volta mantendo os pinos inferiores intactos
 }
 
-void Print_7Seg(int valor)
-{										// Separa o valor inteiro nas suas casas decimais
-	dados_7seg[0] = valor % 10;			// unidade
-	dados_7seg[1] = (valor / 10) % 10;	// dezena
-	dados_7seg[2] = (valor / 100) % 10; // centena
-	dados_7seg[3] = valor / 1000;		// milhar
+void prepare7SegDigits(int value)
+{											  // Separa o value inteiro nas suas casas decimais
+	seven_seg_digits[0] = value % 10;		  // unidade
+	seven_seg_digits[1] = (value / 10) % 10;  // dezena
+	seven_seg_digits[2] = (value / 100) % 10; // centena
+	seven_seg_digits[3] = value / 1000;		  // milhar
 }
 
-int posicao_LEDs = 0;
+int display_scan_index = 0;
 
-void Refresh_LEDs(void)
+void refreshSevenSegDisplays(void)
 {
-	Display_7Seg(dados_7seg[posicao_LEDs], posicao_LEDs, 0);
-	if (++posicao_LEDs >= 4)
-		posicao_LEDs = 0;
+	display7Seg(seven_seg_digits[display_scan_index], display_scan_index, 0);
+	if (++display_scan_index >= 4)
+		display_scan_index = 0;
 }

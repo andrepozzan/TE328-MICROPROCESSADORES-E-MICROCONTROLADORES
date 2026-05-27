@@ -7,7 +7,7 @@
 
 #include "alfabeto.h"
 
-const uint8_t decod_7_seg[10] = {
+const uint8_t seven_seg_patterns[10] = {
     0b00111111, // 0
     0b00000110, // 1
     0b01011011, // 2

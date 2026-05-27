@@ -3,7 +3,7 @@
 #include "stm32g4xx_hal.h"
 #include <stdio.h>
 
-void apagaMatrix(void)
+void clearMatrix(void)
 {
     GPIOC->ODR |= 0x00FF;
     GPIOB->ODR &= ~(0xFF << 8);
@@ -28,5 +28,5 @@ void testMatrix(void)
             HAL_Delay(150); // mais rápido
         }
     }
-    apagaMatrix();
+    clearMatrix();
 }

@@ -10,6 +10,6 @@
 
 #include <stdint.h>
 
-extern const uint8_t decod_7_seg[10];
+extern const uint8_t seven_seg_patterns[10];
 
 #endif /* INC_ALFABETO_H_ */

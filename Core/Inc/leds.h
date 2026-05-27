@@ -21,7 +21,7 @@ extern int playerX;
 extern int playerY;
 
 // Funções para o display LED
-void apagaMatrix(void);
+void clearMatrix(void);
 void turnOnLed(int x, int y);
 void testMatrix(void);
 void atualizaMapa(uint8_t mapa[], int px, int py);
