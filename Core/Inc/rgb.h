@@ -10,7 +10,7 @@ extern "C"
 
     void updateUnifiedDisplays(void);
     void updatePwm(void);
-    void updateMatrix8x8(ColorSelect cor);
+//    void updateMatrix8x8(ColorSelect cor);
 
 #ifdef __cplusplus
 }

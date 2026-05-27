@@ -1,10 +1,11 @@
 # ==========================================
-# Binários e Arquivos de Compilação (Build)
+# Build
 # ==========================================
-/build/
-/Build/
-/Release/
-/Debug/
+Debug/
+Release/
+build/
+Build/
+
 *.elf
 *.bin
 *.hex
@@ -13,47 +14,45 @@
 *.obj
 *.su
 *.d
+*.mk
+*.list
 
 # ==========================================
-# Arquivos específicos da STM32CubeIDE / Eclipse
+# STM32CubeIDE / Eclipse
 # ==========================================
 .runtime/
 .metadata/
-# Se quiser salvar as configurações do projeto da IDE, NÃO ignore o .project e .cproject.
-# Mas ignore os arquivos locais de deploy/logs abaixo:
+
 *.launch
 *.history
+
 .settings/org.eclipse.cdt.codan.core.prefs
 .settings/org.eclipse.cdt.core.prefs
 
 # ==========================================
-# Arquivos de Configuração Local do VS Code
+# VSCode
 # ==========================================
 .vscode/tasks.json
 .vscode/launch.json
 .vscode/c_cpp_properties.json
-# Nota: É bom salvar o arquivo extensions.json ou settings.json se contiver configs do time,
-# mas se forem apenas caminhos absolutos da sua máquina (/opt/st/...), ignore-os:
 .vscode/settings.json
 
 # ==========================================
-# Arquivos Temporários do STM32CubeMX / Geradores
+# STM32CubeMX
 # ==========================================
-# Mantém o arquivo .ioc (ele é o coração do CubeMX, essencial para o Git)
-# Mas ignora os backups e logs gerados por ele:
 *.ioc.bak
 *.mxproject
 STM32CubeMXLog.txt
 
 # ==========================================
-# Ferramentas de Linguagem e Indexação (C/C++)
+# C/C++ tooling
 # ==========================================
 .clangd/
 compile_commands.json
 .cache/
 
 # ==========================================
-# Arquivos do Sistema Operacional
+# OS files
 # ==========================================
 .DS_Store
 Thumbs.db
