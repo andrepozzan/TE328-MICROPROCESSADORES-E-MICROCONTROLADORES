@@ -6,25 +6,25 @@ void drawMatrixMap(const uint8_t mapa[]);
 
 void Draw_Square_2x2(uint8_t x, uint8_t y)
 {
-    // Limita as coordenadas para garantir que o quadrado de 2x2 não "estoure" a matriz 8x8
+    // 1. Limita coordenadas (x e y devem estar entre 0 e 6)
     if (x > 6)
         x = 6;
     if (y > 6)
         y = 6;
 
-    // Cria um mapa de tela em branco (todos os LEDs apagados)
-    uint8_t mapa_quadrado[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    uint8_t mapa_quadrado[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-    // No seu mapa, o bit mais significativo (MSB, 0x80) representa o lado esquerdo.
-    // Portanto, deslocamos os bits para a esquerda baseado na coordenada X.
-    uint8_t bits_linha = (0x03 << (6 - x));
+    // 2. Lógica de deslocamento robusta
+    // Em vez de calcular o deslocamento na hora, vamos definir o padrão 2x2 fixo
+    // e apenas deslocá-lo. 0xC0 é '11000000'.
+    // Ao mover para a direita (x aumenta), deslocamos os bits para a direita.
+    uint8_t bits_linha = (0xC0 >> x);
 
-    // O quadrado ocupa duas linhas consecutivas a partir da posição Y
-    mapa_quadrado[y] = bits_linha;     // Linha superior do quadrado
-    mapa_quadrado[y + 1] = bits_linha; // Linha inferior do quadrado
+    // 3. Aplica nas linhas
+    mapa_quadrado[y] = bits_linha;
+    mapa_quadrado[y + 1] = bits_linha;
 
-    // Chama a sua função nativa que controla os registradores GPIOB/GPIOC por multiplexação
-    // Como a varredura interna dela demora 8ms (1ms por linha), chamamos poucas vezes para não travar o ADC
+    // 4. Varredura
     for (int i = 0; i < 3; i++)
     {
         drawMatrixMap(mapa_quadrado);
