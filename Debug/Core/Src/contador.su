@@ -1,0 +1,4 @@
+../Core/Src/contador.c:41:6:desligar_todos	8	static
+../Core/Src/contador.c:46:6:ligar_display	16	static
+../Core/Src/contador.c:56:6:set_segments	16	static
+../Core/Src/contador.c:69:6:display_number	40	static

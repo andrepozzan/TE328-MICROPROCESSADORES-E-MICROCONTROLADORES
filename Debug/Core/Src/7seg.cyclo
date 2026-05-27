@@ -1,0 +1,6 @@
+../Core/Src/7seg.c:6:6:Cfg_PC8_PC11	1
+../Core/Src/7seg.c:18:6:TurnOff_7seg	1
+../Core/Src/7seg.c:27:6:Test_7Seg	3
+../Core/Src/7seg.c:54:6:Display_7Seg	5
+../Core/Src/7seg.c:80:6:Print_7Seg	1
+../Core/Src/7seg.c:90:6:Refresh_LEDs	2

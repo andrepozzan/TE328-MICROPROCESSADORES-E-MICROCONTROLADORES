@@ -1,0 +1,6 @@
+../Core/Src/write-letters.c:36:6:drawMatrixMap	2
+../Core/Src/write-letters.c:55:10:getMap	3
+../Core/Src/write-letters.c:68:6:writeLetter	4
+../Core/Src/write-letters.c:83:9:getColumn	3
+../Core/Src/write-letters.c:96:6:rotateAntiClockwise	4
+../Core/Src/write-letters.c:111:6:scrollText	7

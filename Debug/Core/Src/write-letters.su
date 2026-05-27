@@ -1,0 +1,6 @@
+../Core/Src/write-letters.c:36:6:drawMatrixMap	32	static
+../Core/Src/write-letters.c:55:10:getMap	24	static
+../Core/Src/write-letters.c:68:6:writeLetter	32	static
+../Core/Src/write-letters.c:83:9:getColumn	24	static
+../Core/Src/write-letters.c:96:6:rotateAntiClockwise	24	static
+../Core/Src/write-letters.c:111:6:scrollText	272	static
