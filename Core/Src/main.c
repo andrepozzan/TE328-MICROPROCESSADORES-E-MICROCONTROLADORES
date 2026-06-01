@@ -198,7 +198,7 @@ int main(void)
     HAL_ADC_ConfigChannel(&hadc3, &sConfig);
     HAL_ADC_Start(&hadc3);
     HAL_ADC_PollForConversion(&hadc3, 10);
-    adc_val_x = HAL_ADC_GetValue(&hadc3);
+    adc_val_y = HAL_ADC_GetValue(&hadc3);
     HAL_ADC_Stop(&hadc3);
 
     /* ---- 2. ADC Y (canal 12) ---- */
@@ -206,7 +206,7 @@ int main(void)
     HAL_ADC_ConfigChannel(&hadc3, &sConfig);
     HAL_ADC_Start(&hadc3);
     HAL_ADC_PollForConversion(&hadc3, 10);
-    adc_val_y = HAL_ADC_GetValue(&hadc3);
+    adc_val_x = HAL_ADC_GetValue(&hadc3);
     HAL_ADC_Stop(&hadc3);
 
     /* ---- 3. Mapeamento ADC -> posicao (0-6) ---- */
